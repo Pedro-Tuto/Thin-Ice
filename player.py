@@ -6,7 +6,7 @@ class Player():
     def __init__(self, position):
         self.position = position
 
-    def mover_jogador():
+    def mover_jogador(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -28,6 +28,6 @@ class Player():
 CIMA = (0, -1)
 BAIXO = (0, 1)
 ESQUERDA = (-1, 0)
-DIREITA = (1, 0
+DIREITA = (1, 0)
      
     
