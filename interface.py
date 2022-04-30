@@ -1,6 +1,6 @@
 import pygame
 import sys
-from jogador import Controlador
+from tabuleiro import Tabuleiro
 
 #definindo as dimensões da janela
 LARGURA = 700
@@ -12,14 +12,47 @@ ALTURA = 700
    3 = destino
    4 = jogador'''
 
-#definindo a grid 1
+
+#definindo as grids
 grid1 = [
-        [2, 2, 2, 0, 0], 
+        [4, 2, 2, 0, 0], 
         [2, 2, 2, 2, 0], 
         [2, 2, 2, 2, 2], 
-        [0, 0, 2, 2, 0], 
+        [2, 2, 2, 2, 2], 
         [0, 0, 2, 3, 0]
         ] 
+grid2 = [
+        [0, 2, 2, 4, 0], 
+        [2, 2, 2, 2, 0], 
+        [3, 2, 2, 2, 2], 
+        [2, 2, 2, 2, 2], 
+        [0, 2, 2, 0, 0]
+        ]
+grid3 = [
+        [4, 2, 2, 0, 0], 
+        [2, 2, 2, 2, 0], 
+        [2, 2, 2, 2, 2], 
+        [2, 2, 2, 2, 2], 
+        [0, 0, 2, 3, 0]
+        ]
+grid4 = [
+        [4, 2, 2, 0, 0], 
+        [2, 2, 2, 2, 0], 
+        [2, 2, 2, 2, 2], 
+        [2, 2, 2, 2, 2], 
+        [0, 0, 2, 3, 0]
+        ]
+grid5 = [
+        [4, 2, 2, 0, 0, 0], 
+        [2, 2, 2, 2, 0, 0], 
+        [2, 2, 2, 2, 2, 2], 
+        [2, 2, 2, 2, 2, 2], 
+        [0, 0, 2, 2, 0, 0],
+        [0, 0, 2, 3, 0, 0]
+        ]
+
+#definindo a lista de grids
+lista_grids = [grid1, grid2, grid3, grid4, grid5]
 
 #definindo as cores
 preto = (0,0,0)
@@ -48,16 +81,24 @@ def bird(x,y):
 class Interface():
     def __init__(self):
         self.gameEnd = False
-        self.controlador = Controlador(grid1)
+        self.tabuleiro1 = Tabuleiro(lista_grids.pop(0))
 
     def atualizar_tela(self):
         while not self.gameEnd:
             gameDisplay.fill(branco)
-            self.mostrar_tabuleiro(self.controlador.tabuleiro1)
+            self.mostrar_tabuleiro()
+            self.mover_jogador()
+            chegou = self.tabuleiro1.get_venceu()
+            if chegou:
+                try:
+                    self.tabuleiro1 = Tabuleiro(lista_grids.pop(0))
+                except:
+                    print("Você chegou ao final!")
+                    break
             pygame.display.update()
             clock.tick(60)
         
-    def mostrar_tabuleiro(self, tabuleiro):
+    def mostrar_tabuleiro(self):
         posicao_x = 0
         posicao_y = 0
         for y in range(5):
@@ -84,25 +125,19 @@ class Interface():
                 elif x== 4:
                     posicao_x = 500
 
-                if tabuleiro.matriz[y][x]==0:
+                if self.tabuleiro1.matriz[y][x]==0:
                     pygame.draw.rect(gameDisplay, roxo, (posicao_x,posicao_y,100,100))
-                elif tabuleiro.matriz[y][x]==1:
+                elif self.tabuleiro1.matriz[y][x]==1:
                     pygame.draw.rect(gameDisplay, azul, (posicao_x,posicao_y,100,100))
-                elif tabuleiro.matriz[y][x]==2:
+                elif self.tabuleiro1.matriz[y][x]==2:
                     pygame.draw.rect(gameDisplay, azul_claro, (posicao_x,posicao_y,100,100))
-                elif tabuleiro.matriz[y][x]==3:
+                elif self.tabuleiro1.matriz[y][x]==3:
                     pygame.draw.rect(gameDisplay, verde, (posicao_x,posicao_y,100,100))
-                elif tabuleiro.matriz[y][x]==4:
+                elif self.tabuleiro1.matriz[y][x]==4:
                     pygame.draw.rect(gameDisplay, vermelho, (posicao_x,posicao_y,100,100))
 
     def mover_jogador(self, ):
-        
-        
-        
-        
         keys = pygame.key.get_pressed()
-        x_move = 0
-        y_move = 0
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -110,21 +145,17 @@ class Interface():
             #configurando os inputs
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_a:
-                    x_move = -100
+                    print("Movimento para ESQUERDA")
+                    self.tabuleiro1.mover_jogador('esquerda')
                 elif event.key == pygame.K_d:
-                    x_move = 100
+                    self.tabuleiro1.mover_jogador('direita')
+                    print("Movimento para DIREITA")
                 elif event.key == pygame.K_w:
-                    y_move = 100
+                    self.tabuleiro1.mover_jogador('cima')
+                    print("Movimento para CIMA")
                 elif event.key == pygame.K_s:
-                    y_move = -100
-            #configurando o que acontece quando soltamos a tecla
-            if event.type == pygame.KEYUP:   
-                if event.key == pygame.K_a or event.key == pygame.K_d:
-                    x_move = 0
-                if event.key == pygame.K_w or event.key == pygame.K_s:
-                    y_move = 0
-            x += x_move
-            y += y_move
+                    self.tabuleiro1.mover_jogador('baixo')
+                    print("Movimento para BAIXO")
 
 
         
